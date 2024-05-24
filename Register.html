@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up Form</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+      body {
+        background-image: url("https://caracoltv.brightspotcdn.com/dims4/default/734f124/2147483647/strip/true/crop/806x414+57+0/resize/1440x740!/quality/90/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F69%2F16%2Ffa5a7ac343f59b4d4cd9aee1acb3%2Fimagen-1.png");
+        background-size: cover;
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        position: relative;
+        /* Para posicionar el toast */
+      }
+
+      .container {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        padding: 40px;
+        width: 400px;
+        text-align: center;
+      }
+
+      h1.title {
+        color: #2196f3;
+        margin-bottom: 30px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="password"][name="confirm-password"] {
+        width: calc(100% - 30px);
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="password"][name="confirm-password"]:focus {
+        outline: none;
+        border-color: #2196f3;
+      }
+
+      input[type="checkbox"] {
+        margin-right: 8px;
+      }
+
+      input[type="submit"] {
+        background-color: #2196f3;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #1976d2;
+      }
+
+      p {
+        margin-top: 20px;
+      }
+
+      a {
+        color: #2196f3;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .toast {
+        position: fixed;
+        top: 10vh;
+        right: 0;
+        left: 0;
+        margin: auto;
+        width: 300px;
+        background-color: #f44336;
+        /* Color rojo */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 100;
+        /* Asegúrate de que esté por encima de otros elementos */
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+      /* Estilos para el botón de regreso */
+      .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1.2em; /* Tamaño de fuente grande */
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #1976d2;
+        }
+
+        /* Icono de regreso */
+        .back-button i {
+            margin-right: 10px; /* Espacio entre el icono y el texto */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body>
+    <a href="index.php" class="back-button">
+        <i class="fas fa-arrow-left"></i> Regresar al Inicio
+    </a>
+    <div class="container">
+      <h1 class="title">Registro</h1>
+      <form method="post" action="Register.php">
+        <input type="text" name="name" placeholder="Nombre" required />
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Contraseña"
+          required
+        />
+        <input
+          type="password"
+          id="confirm-password"
+          name="confirm-password"
+          placeholder="Confirmar Contraseña"
+          required
+        />
+        <input
+          type="submit"
+          value="Registro"
+          onclick="return validarContrasenas()"
+        />
+      </form>
+      <div class="toast" id="toast"></div>
+      <p>Ya tienes cuenta? <a href="login.html">Inicia Sesión</a></p>
+    </div>
+    <script>
+      // Función para mostrar el toast
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 5000); // Oculta el toast después de 5 segundos
+      }
+
+      function validarContrasenas() {
+        var contrasena = document.getElementById("password").value;
+        var confirmarContrasena =
+          document.getElementById("confirm-password").value;
+
+        if (contrasena !== confirmarContrasena) {
+          showToast(
+            "Las contraseñas no coinciden. Por favor, inténtalo de nuevo."
+          );
+          return false;
+        }
+        return true;
+      }
+
+      // Validación de nombre de usuario (igual que antes)
+      document.querySelector("form").addEventListener("submit", function (e) {
+        var nombre = document.querySelector('input[name="name"]').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "check_username.php", false);
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.send("name=" + encodeURIComponent(nombre));
+        if (xhr.responseText == "1") {
+          showToast(
+            "El nombre de usuario ya existe. Por favor, inicia sesión o elige otro usuario."
+          );
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>

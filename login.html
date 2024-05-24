@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesion</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            background-image: url("https://caracoltv.brightspotcdn.com/dims4/default/734f124/2147483647/strip/true/crop/806x414+57+0/resize/1440x740!/quality/90/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F69%2F16%2Ffa5a7ac343f59b4d4cd9aee1acb3%2Fimagen-1.png");
+            background-size: cover;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+        }
+
+        h1.title {
+            color: #2196F3;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 30px);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        button[type="submit"] {
+            background-color: #2196F3;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #1976D2;
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos para el botón de regreso */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1.2em; /* Tamaño de fuente grande */
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #1976D2;
+        }
+
+        /* Icono de regreso */
+        .back-button i {
+            margin-right: 10px; /* Espacio entre el icono y el texto */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <a href="index.php" class="back-button">
+        <i class="fas fa-arrow-left"></i> Regresar al Inicio
+    </a>
+    <div class="container">
+        <h1 class="title">Iniciar Sesion</h1>
+        <form method="post" action="login.php">
+            <input type="text" name="username" placeholder="Nombre de usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar</button>
+        </form>
+        <p>No tienes cuenta? <a href="Register.html">Regístrate</a></p>
+    </div>
+    <script> window.onload = function () {
+            var url = new URL(window.location.href); var error = url.searchParams.get("error"); if (error) {
+                var message = ""; switch (error) {
+                    case "401": message = "Cuenta no encontrada o contraseña incorrecta."; break; case "403": message = "Acceso denegado."; break; case "500": message = "Error del servidor. Por favor, inténtalo de nuevo más tarde."; break;
+                    // Agrega más casos de error aquí si es necesario 
+                    default: message = "Error desconocido. Por favor, inténtalo de nuevo.";
+                }
+                // Muestra el mensaje de error
+                var errorElement = document.createElement("p"); errorElement.style.color = "red"; errorElement.textContent = message; document.querySelector(".container").appendChild(errorElement);
+            }
+        }; 
+    </script>
+</body>
+
+</html>
