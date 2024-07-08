@@ -119,7 +119,9 @@ technique, ​Forest wildlifeand hunting, ​Caring for forest to benefit nature
   <section class="u-align-center u-clearfix u-palette-5-light-2 u-section-4" id="carousel_afc9">
     <div class="u-clearfix u-sheet u-sheet-1">
       <h3 class="u-text u-text-1"> lugares hermosos de nuestro pueblo... </h3>
-      <h6 class="u-text"> (Accede a la página específica de cada lugar tocando el texto)</h6>
+      <h6 class="u-text"> (Accede a la página específica de cada lugar tocando la tarjeta. <br> También puedes buscar
+        lugares específicos en el siguiente recuadro)</h6>
+      <!-- Aquí va el input -->
       <div class="u-expanded-width u-list u-list-1">
         <div class="u-repeater u-repeater-1">
           <div
@@ -610,6 +612,79 @@ technique, ​Forest wildlifeand hunting, ​Caring for forest to benefit nature
     </div>
   </footer>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.placeholder = 'Buscar lugares...';
+      searchInput.classList.add('search-input');
+
+      const listContainer = document.querySelector('.u-list.u-list-1');
+      if (listContainer && listContainer.parentNode) {
+        listContainer.parentNode.insertBefore(searchInput, listContainer);
+      } else {
+        console.error('No se encontró el contenedor de la lista');
+        return;
+      }
+
+      function filterCards() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll('.u-repeater-item');
+        let visibleCards = 0;
+
+        cards.forEach(card => {
+          const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+          const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+          if (title.includes(searchTerm) || description.includes(searchTerm)) {
+            card.style.display = '';
+            visibleCards++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        return visibleCards;
+      }
+
+      function navigateToFirstResult() {
+        const visibleCards = document.querySelectorAll('.u-repeater-item:not([style*="display: none"])');
+        if (visibleCards.length > 0) {
+          const firstLink = visibleCards[0].querySelector('a');
+          if (firstLink) {
+            window.location.href = firstLink.href;
+          }
+        }
+      }
+
+      searchInput.addEventListener('input', filterCards);
+
+      searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          const visibleCardsCount = filterCards();
+          if (visibleCardsCount > 0) {
+            navigateToFirstResult();
+          }
+        }
+      });
+
+      const style = document.createElement('style');
+      style.textContent = `
+    .search-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  `;
+      document.head.appendChild(style);
+
+      filterCards();
+    });
+  </script>
 </body>
 
 </html>

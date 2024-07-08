@@ -74,6 +74,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $stmt->close();
         }
+    } else if (isset($_POST["delete_user"])) {
+        // Nuevo código para eliminar usuario
+        $stmt = $conn->prepare("DELETE FROM login WHERE usuario = ?");
+        $stmt->bind_param("s", $_SESSION["username"]);
+        if ($stmt->execute()) {
+            // La eliminación fue exitosa.
+            session_destroy();
+            header("Location: index.php");
+            exit();
+        } else {
+            // Error en la eliminación.
+            $update_message = "Error al eliminar la cuenta";
+        }
+        $stmt->close();
     }
 } else {
     $stmt = $conn->prepare("SELECT usuario, email FROM login WHERE usuario = ?");
@@ -92,14 +106,14 @@ mysqli_close($conn);
 <head>
     <title>Actualizar Perfil</title>
     <style>
-        /* Importa una fuente moderna */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
         body {
             font-family: 'Poppins', sans-serif;
             background-image: url("https://caracoltv.brightspotcdn.com/dims4/default/734f124/2147483647/strip/true/crop/806x414+57+0/resize/1440x740!/quality/90/?url=http%3A%2F%2Fcaracol-brightspot.s3.us-west-2.amazonaws.com%2F69%2F16%2Ffa5a7ac343f59b4d4cd9aee1acb3%2Fimagen-1.png");
             background-size: cover;
-            /* Gradiente de fondo */
+            background-position: center;
+
             display: flex;
             justify-content: center;
             align-items: center;
@@ -107,13 +121,22 @@ mysqli_close($conn);
             margin: 0;
         }
 
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: -1;
+        }
+
         .container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            /* Dos columnas con el mismo ancho */
             grid-gap: 30px;
             justify-content: center;
-            /* Centra las columnas horizontalmente */
         }
 
         .card {
@@ -126,7 +149,6 @@ mysqli_close($conn);
 
         h2 {
             color: #008080;
-            /* Color de encabezado moderno */
         }
 
         input[type="text"],
@@ -169,14 +191,12 @@ mysqli_close($conn);
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
             z-index: 100;
-            /* Asegúrate de que esté por encima de otros elementos */
         }
 
         .toast.show {
             opacity: 1;
         }
 
-        /* Estilos para el botón de regreso */
         .back-button {
             position: fixed;
             top: 20px;
@@ -189,7 +209,7 @@ mysqli_close($conn);
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            font-size: 1.2em; /* Tamaño de fuente grande */
+            font-size: 1.2em;
             text-decoration: none;
         }
 
@@ -197,12 +217,29 @@ mysqli_close($conn);
             background-color: #006666;
         }
 
-        /* Icono de regreso */
         .back-button i {
-            margin-right: 10px; /* Espacio entre el icono y el texto */
+            margin-right: 10px;
+        }
+
+        .delete-button {
+            background-color: #ff6961 !important;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .delete-button:hover {
+            background-color: #cc0000;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -230,6 +267,20 @@ mysqli_close($conn);
                 <input type="password" id="confirm-password" name="confirm-password"><br>
                 <input type="submit" name="update_password" value="Actualizar Contraseña">
             </form>
+
+        </div>
+
+        <div class="card" style="background-color: transparent;">
+
+        </div>
+
+        <div class="card">
+            <h2>Otras Opciones</h2>
+
+            <form method="post" action="actualizar.php" onsubmit="return confirmDelete()">
+                <label>Eliminar Mi Cuenta:</label><br>
+                <input type="submit" name="delete_user" value="Eliminar Cuenta" class="delete-button">
+            </form>
         </div>
     </div>
 
@@ -246,17 +297,19 @@ mysqli_close($conn);
             return true;
         }
 
-        // Función para mostrar el toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 5000); // Oculta el toast después de 5 segundos
+            }, 5000);
         }
 
-        // Mostrar el toast si hay un mensaje de actualización
+        function confirmDelete() {
+            return confirm("¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.");
+        }
+
         <?php if (isset($update_message)): ?>
             showToast("<?php echo $update_message; ?>");
         <?php endif; ?>
